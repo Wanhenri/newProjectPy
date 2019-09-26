@@ -1,20 +1,22 @@
-import cartopy.crs as ccrs
+#import cartopy.crs as ccrs
 import xarray as xr
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib import pylab
-import pandas as pd
-import numpy as np
-import datetime
-from datetime import datetime
+#import pandas as pd
+#import numpy as np
+#import datetime
+#from datetime import datetime
 import matplotlib.dates as mdates
 from matplotlib.dates import DateFormatter
  
 from matplotlib.ticker import StrMethodFormatter, MultipleLocator, FormatStrFormatter, AutoMinorLocator
 
-import cartopy
+#import cartopy
+
 
 def serieTemporal(prev):
+  prev = str(prev)
   pylab.rcParams['figure.figsize'] = (30,10)
   
   anomes = '201401'
@@ -27,9 +29,6 @@ def serieTemporal(prev):
   path_4 = "/dados/dmdpesq/Experimento_umidade_do_solo/GFS/"    
   name_file_4 = 'prev.2014.jan.'+ prev +'h_interp.nc'
   path_out ="/dados/dmdpesq/Experimento_umidade_do_solo/out/"   
-  #plot(linestyle='dashed',color='g', linewidth=2, marker='o',markersize=10) 
-  #sns.set()
-  #sns.set_style('white', {"xtick.major.size": 2, "ytick.major.size": 2})
 
   sns.set_style("darkgrid", {"axes.facecolor": ".9"})
   sns.set_context("notebook", font_scale=1.5, rc={"lines.linewidth": 2.5})
@@ -44,15 +43,14 @@ def serieTemporal(prev):
 
   plt.figtext(.5,.96,'Série Temporal', fontsize=30, ha='center')
   plt.figtext(.5,.90,'Janeiro/2014',fontsize=20,ha='center')
-  plt.figtext(.15,.90,'Previsão 24h 12Z',fontsize=20,ha='left')
+  plt.figtext(.15,.90,'Previsão '+ prev +'h 12Z',fontsize=20,ha='left')
   plt.figtext(.86,.90,'Região: NORTE   B7',fontsize=20,ha='right')
 
   DS_NCEP = xr.open_dataset(path_1 + name_file_1)
 
   longName = DS_NCEP.prec.attrs['long_name']
 
-  xTickTime = DS_NCEP.prec['time'].isel(time=slice(None, 31))
-  
+  xTickTime = DS_NCEP.prec['time'].isel(time=slice(None, 31))  
 
   
   p1 = DS_NCEP.prec.isel(time=slice(None, 31), lat=slice(2,-11), lon=slice(-75,-65)).mean(dim="lat").mean(dim="lon")
@@ -81,8 +79,13 @@ def serieTemporal(prev):
   plt.legend(fontsize=17, frameon=True)
   plt.savefig(path_out + title, bbox_inches='tight', pad_inches=.2, dpi=300, figsize=(15,15))
   print('Saved: {}'.format(title))
+  plt.cla() #means clear current axis
+  plt.clf() #means clear current figure
+  plt.close()
   return
 
 var= 'prec'
 prev = '24'
-serieTemporal(prev)
+for prev in range(24,192,24):
+  print('prev',prev)
+  serieTemporal(prev)
