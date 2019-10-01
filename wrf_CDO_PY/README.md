@@ -1,0 +1,4 @@
+usando:
+wrf
+cdo
+python
