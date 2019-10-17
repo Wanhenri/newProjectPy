@@ -53,6 +53,8 @@ def plotaGFS(previsao):
     plt.savefig(path_out + title, bbox_inches='tight', pad_inches=.2, dpi=300)
     print('Saved: {}'.format(title))
     plt.close()
+    GFS.close()
+    
     return
 
 for prev in range(24,192,24):
