@@ -1,0 +1,37 @@
+#! /bin/bash
+
+inctime=/stornext/home/carlos.bastarz/bin/inctime
+
+datai=20180801
+dataf=20180930
+#dataf=20180802
+
+
+#wrfout_d01_2018-08-24_23:00:00
+
+data=${datai}
+
+while [ ${data} -le ${dataf} ]
+do
+	dataday=` echo ${data} |cut -c7-8`
+	datamonth=` echo ${data} |cut -c5-6`
+
+#aot550 co o3 pm25 pmint precip 
+	for var in precip;
+        do
+
+		for i in $(seq -w 0 3 23)
+        	do
+
+
+		echo "${i}"	
+		echo "cdo -select,name=${var} profile_${data}00G-A-2018-${datamonth}-${dataday}-${i}0000-g1.nc new_files/profile_${data}00G-A-2018-${datamonth}-${dataday}-${i}0000-g1_${var}.nc"
+
+		cdo -select,name=${var} profile_${data}00G-A-2018-${datamonth}-${dataday}-${i}0000-g1.nc new_files/profile_${data}00G-A-2018-${datamonth}-${dataday}-${i}0000-g1_${var}.nc
+
+		done
+		data=$(${inctime} ${data} +1d %y4%m2%d2)
+	done
+done
+exit 0
+
