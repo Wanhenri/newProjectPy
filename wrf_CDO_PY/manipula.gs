@@ -18,7 +18,7 @@ do
 	echo "${dataday}"
 	
 	#RAINC RAINNC co o3 TAUAER3 PM2_5_DRY V10 U10
-	for var in RAINC;
+	for var in U10;
 	do
 		for i in $(seq -w 0 23)
 		do	    		
