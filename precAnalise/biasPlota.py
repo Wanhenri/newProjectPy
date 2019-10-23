@@ -103,8 +103,10 @@ for ind in range(0,7,1):
     plt.gca().yaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}'))
     plt.axhline(y=0, color='black')
     #
-    plt.figtext(.5,.96,'BIAS', fontsize=30, ha='center')
-    plt.figtext(.5,.90,'Janeiro/2014',fontsize=20,ha='center')
+    #plt.figtext(.5,.96,'BIAS', fontsize=30, ha='center')
+    # BIAS VARNAME = OPER-MERGE
+    plt.figtext(.5,.96,'20140101 12Z', fontsize=30, ha='center')
+    plt.figtext(.5,.90,'BIAS' + longName[8:30] +'= OPER-MERGE',fontsize=30,ha='center')
     plt.figtext(.86,.90,'Região: '+ config['Regiao'][ind] +' Setor: '+ config['Setor'][ind] ,fontsize=20,ha='right')
     #
     plt.plot(lista_previsao,lista_bias_umidadeGL,color='orange', label='umidade GL')
