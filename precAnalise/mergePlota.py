@@ -6,8 +6,8 @@ import cartopy
 
 def plotaMERGE(anomes):
 
-  #path = "/dados/dmdpesq/Experimento_umidade_do_solo/MERGE/"
-  path = "/dados/dmdpesq/MERGE/"
+  path = "/dados/dmdpesq/Experimento_umidade_do_solo/MERGE/"
+  #path = "/dados/dmdpesq/MERGE/"
   path_out ="/dados/dmdpesq/Experimento_umidade_do_solo/out/"
   name_file = 'prec_'+anomes+'.nc'
   umidade = 'MERGE'
@@ -44,5 +44,5 @@ def plotaMERGE(anomes):
   plt.close()
   return
 
-anomes = '201808'
+anomes = '201401'
 plotaMERGE(anomes)

@@ -15,8 +15,8 @@ def plotaUmidadeGL(previsao):
       path = "/dados/dmdpesq/Experimento_umidade_do_solo/umidade_GL/"
       path_out ="/dados/dmdpesq/Experimento_umidade_do_solo/out/"
       name_file = 'JAN2014_'+ prev +'Z_12Z.nc'
-      umidade = 'umidade_GL'
-      text = 'Condição inicial:' + umidade
+      umidade = 'OPER'
+      text = umidade
 
       DS_NCEP = xr.open_dataset(path + name_file)
 
@@ -25,8 +25,8 @@ def plotaUmidadeGL(previsao):
       ussl = [0,0.05,0.10,0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.65,0.70,0.75,0.80,0.85,0.90,0.95,1.0,1.05]
       uzrs = [0,0.05,0.10,0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.65,0.70,0.75,0.80,0.85,0.90,0.95,1.0,1.05]
       uzds = [0,0.05,0.10,0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.65,0.70,0.75,0.80,0.85,0.90,0.95,1.0,1.05]
-      cssf = [-100,-85,-70,-55,-40,-25,-10,0,10,25,40,55,70,85,100,115,130,145,160,175,190,205,220,235,250,265,280,295,310,325,340,355,370,385,400]
-      clsf = [-100,-85,-70,-55,-40,-25,-10,0,10,25,40,55,70,85,100,115,130,145,160,175,190,205,220,235,250,265,280,295,310,325,340,355,370,385,400]
+      cssf = [-100,-85,-70,-55,-40,-25,-10,0,10,25,40,55,70,85,100,115,130,145,160,175,190,205,220,235,250]
+      clsf = [-100,-85,-70,-55,-40,-25,-10,0,10,25,40,55,70,85,100,115,130,145,160,175,190,205,220,235,250]
       t2mt = [260,265,270,273,275,278,280,285,287,290,292,293,294,295,296,297,298,299,300,305]
       q2mt = [0.000,0.002,0.004,0.006,0.008,0.010,0.012,0.014,0.016,0.018,0.020,0.022,0.024,0.026,0.028,0.030,0.032]
 
@@ -36,6 +36,12 @@ def plotaUmidadeGL(previsao):
       'niveis':  [prec, ussl, uzrs, uzds, cssf, clsf, t2mt, q2mt]
       }
 
+      longName = config['ds'][ind].attrs['long_name']
+      #longNameEditUnit = longName[51:60]
+      longNameEditNameVAR = longName[10:50]
+
+      print(longNameEditNameVAR)
+      #exit(0)
 
       da = config['ds'][ind].mean('time')
       lons = DS_NCEP.variables['lon'][:]
@@ -49,23 +55,29 @@ def plotaUmidadeGL(previsao):
       if ind == 0:
         #Para Precipitação           
         cp = plt.contourf(lons,lats,da, clevs, colors=color,zorder=1)
+        longNameEditUnit = longName[51:60]
       else:
         #Para a demais variaveis
         cp = plt.contourf(lons,lats,da, clevs, cmap=cm.rainbow,zorder=1)
+        longNameEditUnit = longName[51:54]
       ax.coastlines(resolution='110m')
       ax.add_feature(cartopy.feature.BORDERS, linestyle=':')
       #for BR
       ax.set_extent([-85, -30, -60, 15])
       ax.stock_img()
       ax.set_title(
-                             'Brazilian Global Atmospheric Model (BAM)'
+                            ' BRAZILIAN ATMOSPHERIC MODEL (BAM)' 
+                           + '\n' 
+                           + '20140101 12Z ' 
+                           + (name_file[7:11] if prev =='120' or prev =='144' or prev == '168' else name_file[8:10])
+                           + 'h  '
+                           +'IC= '
+                           + text
                            + '\n'
-                           + 'VAR:  ' 
-                           + config['variavel'][ind]
-                           + (name_file[0:11] if prev =='120' or prev =='144' or prev == '168' else name_file[0:10])
-                           + 'h 12Z'
-                           + '\n'
-                           + text,
+                           +longNameEditNameVAR
+                           +'  ['
+                           + longNameEditUnit
+                           +']',
                            fontsize=18
       )
       fig.colorbar(cp, orientation='horizontal',pad=0.05)
