@@ -73,18 +73,11 @@ def plotaDiff(previsao,anomes):
     #for BR
     ax.set_extent([-83, -34, -47.5, 10])
     ax.stock_img()
-    ax.set_title(
-                           'Brazilian Global Atmospheric Model (BAM)'
-                         + '\n'
-                         + ' ' 
+    ax.set_title(          '20140101 12Z '
+                         + prev
+                         + 'h'
                          + '\n'   
-                         + 'Diff(New-GFS) - diff(GL-GFS) ' 
-                         + '\n'
-                         + ' VAR: PREC ' 
-                         + '\n'
-                         + prev 
-                         + 'h 12Z'
-                         + '\n',
+                         + 'DIFF PRECIPITATION = (LDAS1-GFS) - (OPER-GFS) ' ,
                          fontsize=18
     )
 

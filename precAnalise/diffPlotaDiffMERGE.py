@@ -85,7 +85,7 @@ def plotaDiff(previsao,anomes):
     fig.colorbar(cp, orientation='horizontal',pad=0.05)
     fig.set_label('mm')
     
-    title = 'diff_'+ prev +'_Diff_MERGE.png'
+    title = 'diff_'+ prev +'_Diff.png'
 
     plt.savefig(path_out + title, bbox_inches='tight', pad_inches=.2, dpi=300)
     print('Saved: {}'.format(title))

@@ -61,9 +61,11 @@ def serieTemporal(prev):
     plt.gca().xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
 
 
-    plt.figtext(.5,.96,'Série Temporal', fontsize=30, ha='center')
-    plt.figtext(.5,.90,'Janeiro/2014',fontsize=20,ha='center')
-    plt.figtext(.15,.90,'Previsão '+ prev +'h 12Z',fontsize=20,ha='left')
+    #plt.figtext(.5,.96,'Série Temporal', fontsize=30, ha='center')
+    #plt.figtext(.5,.90,'Janeiro/2014',fontsize=20,ha='center')
+    #plt.figtext(.15,.90,'Previsão '+ prev +'h 12Z',fontsize=20,ha='left')
+    plt.figtext(.5,.96,'20140101 12Z '+ prev +'h', fontsize=30, ha='center')
+    plt.figtext(.5,.90,'Serie Temporal ' ,fontsize=30,ha='center')
     plt.figtext(.86,.90,'Região: '+ config['Regiao'][ind] +' Setor: '+ config['Setor'][ind] ,fontsize=20,ha='right')
 
 
@@ -75,12 +77,12 @@ def serieTemporal(prev):
 
 
     p1 = DS_NCEP.prec.isel(time=slice(None, 31), lat=slice(latNorte,latSul), lon=slice(lonOeste,lonLest)).mean(dim="lat").mean(dim="lon")
-    plt.plot(xTickTime,p1,color='orange', label='umidade GL')
+    plt.plot(xTickTime,p1,color='orange', label='OPER')
     plt.xticks(rotation=45) 
 
     DS_NCEP_umidade_nova = xr.open_dataset(path_3 + name_file_3)
     p3 = DS_NCEP_umidade_nova.isel(time=slice(None, 31), lat=slice(latNorte,latSul), lon=slice(lonOeste,lonLest)).prec.mean(dim="lat").mean(dim="lon")
-    plt.plot(xTickTime,p3,color='r', label='Nova umidade')
+    plt.plot(xTickTime,p3,color='r', label='LDAS')
     plt.xticks(rotation=45) 
 
     GFS = xr.open_dataset(path_4 + name_file_4)
@@ -98,7 +100,7 @@ def serieTemporal(prev):
     plt.ylabel(longName[8:30], labelpad=30)
     plt.xlabel('Dia', labelpad=30)
 
-    title = 'previsao_'+ prev +'_regiao_'+ config['Regiao'][ind] +'_'+ config['Setor'][ind]+'_SerieTemporal.png'
+    title = 'previsao_'+ prev +'_regiao_'+ config['Regiao'][ind] +'_'+ config['Setor'][ind]+'_SerieTemporal_GFS_MERGE_BAM.png'
     plt.legend(fontsize=17, frameon=True)
     plt.savefig(path_out + title, bbox_inches='tight', pad_inches=.2, dpi=300, figsize=(15,15))
     print('Saved: {}'.format(title))

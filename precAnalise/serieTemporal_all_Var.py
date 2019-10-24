@@ -70,11 +70,17 @@ def serieTemporal(prev):
 #    }
 
 
-    for indVars in range(0,8,1):
-        print('indVars',indVars) 
+    #for indVars in range(0,8,1):
+    #    print('indVars',indVars) 
 
-        for ind in range(0,7,1):
-            print('ind',ind)
+    for ind in range(0,7,1):
+        print('ind',ind)
+
+        for indVars in range(0,8,1):
+            print('indVars',indVars)
+
+        #for ind in range(0,7,1):
+        #    print('ind',ind)
 
             pylab.rcParams['figure.figsize'] = (30,10)
 
@@ -143,23 +149,18 @@ def serieTemporal(prev):
                 ,'Q2MT'       ]
             }
 
-            longName = vars['ds'][ind].attrs['long_name']
+            longName = vars['ds'][indVars].attrs['long_name']
             #longNameEditUnit = longName[51:60]
             longNameEditNameVAR = longName[10:50]
             print(longNameEditNameVAR)
 
             #plt.figtext(.5,.96,'Série Temporal', fontsize=30, ha='center')
             #plt.figtext(.5,.90,'Janeiro/2014',fontsize=20,ha='center')
-            plt.figtext(.5,.96,'20140101 12Z', fontsize=30, ha='center')
-            plt.figtext(.5,.90,'Serie Temporal  ' + longNameEditNameVAR ,fontsize=30,ha='center')
-           
-            if ind == 0:
-                longNameEditUnit = longName[51:60]
-                plt.figtext(.15,.90,'Previsão '+ prev +'h 12Z ' + prev + vars['variavel'][indVars] + '[' + longNameEditUnit + ']',fontsize=20,ha='left')
-            else:
-                longNameEditUnit = longName[51:54]
-                plt.figtext(.15,.90,'Previsão '+ prev +'h 12Z ' + prev + vars['variavel'][indVars] + '[' + longNameEditUnit + ']',fontsize=20,ha='left')
-
+            plt.figtext(.5,.94,'20140101 12Z  ' + prev +'h' , fontsize=20, ha='center')
+            #plt.figtext(.15,.90,'Previsão '+ prev +'h 12Z ' + prev + vars['variavel'][indVars],fontsize=20,ha='left')
+            plt.figtext(.5,.90,'Serie Temporal  ' + longNameEditNameVAR ,fontsize=20,ha='center')
+            #plt.figtext(.5,.90,'Serie Temporal  ' + longNameEditNameVAR ,fontsize=20,ha='center')
+            #plt.figtext(.15,.90,'Previsão '+ prev +'h 12Z ' + prev + vars['variavel'][indVars],fontsize=20,ha='left')
             plt.figtext(.86,.90,'Região: '+ config['Regiao'][ind] +' Setor: '+ config['Setor'][ind] ,fontsize=20,ha='right')
 
 
@@ -179,11 +180,18 @@ def serieTemporal(prev):
             plt.xticks(rotation=45) 
 
             #plt.ylim(0,25)
-            
-            
 
-            plt.ylabel(longName[8:30] +' '+ longNameEditUnit, labelpad=30)
-            #plt.xlabel('Dia', labelpad=30)
+            if indVars == 0:
+            #Para Precipitação   
+                longNameEditUnit = longName[51:63]
+                plt.ylabel(longName[15:30] + ' [ '+ longNameEditUnit + ']', labelpad=30)
+            else:
+            #Para a demais variaveis
+                longNameEditUnit = longName[51:54]
+                plt.ylabel(longName[8:30] + ' [ '+ longNameEditUnit + ']', labelpad=30)
+
+            #plt.ylabel(longName[8:30], labelpad=30)
+            plt.xlabel('', labelpad=30)
 
             title = 'previsao_'+ prev +'_regiao_'+ config['Regiao'][ind] +'_'+ config['Setor'][ind]+'_SerieTemporal_'+ vars['variavel'][indVars] +'.png'
             plt.legend(fontsize=17, frameon=True)

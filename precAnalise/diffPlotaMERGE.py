@@ -22,9 +22,8 @@ def plotaDiff(previsao,anomes,tipoUmidade):
     path_1 = "/dados/dmdpesq/Experimento_umidade_do_solo/"+ tipoUmidade +"/"
     name_file_1 = 'JAN2014_'+ prev +'Z_12Z_interp.nc'
 
-    path_2 = "/dados/dmdpesq/Experimento_umidade_do_solo/GFS/"    
-    name_file_2 = 'prev.2014.jan.'+ prev +'h_interp.nc'
-
+    path_2 = "/dados/dmdpesq/Experimento_umidade_do_solo/MERGE/"
+    name_file_2 = 'prec_'+anomes+'.nc'
     
     path_out ="/dados/dmdpesq/Experimento_umidade_do_solo/out/"   
 
@@ -37,11 +36,11 @@ def plotaDiff(previsao,anomes,tipoUmidade):
     DS_NCEP = xr.open_dataset(path_1 + name_file_1)
     da_DS_NCEP = DS_NCEP.prec.mean('time')
 
-    GFS = xr.open_dataset(path_2 + name_file_2)
-    da_gfs = GFS.APCP_surface.mean('time')
+    MERGE = xr.open_dataset(path_2 + name_file_2)
+    da_merge = MERGE.prec.mean('time')
 
     
-    da = (DS_NCEP.prec.mean('time') - GFS.APCP_surface.mean('time'))
+    da = (DS_NCEP.prec.mean('time') - MERGE.prec.mean('time'))
     #da = (MERGE.prec.mean('time') - DS_NCEP.prec.mean('time'))
     #print(da)
 
@@ -66,19 +65,24 @@ def plotaDiff(previsao,anomes,tipoUmidade):
                          + prev
                          + 'h'
                          + '\n' 
-                         + ' DIFF PRECIPITATION = ('+ tipoUmidadetitle +' - GSF)',
+                         + ' DIFF PRECIPITATION = ('+ tipoUmidadetitle +'-MERGE)',
                          fontsize=18
-    )
+    ) #'BRAZILIAN ATMOSPHERIC MODEL (BAM)'
 
     fig.colorbar(cp, orientation='horizontal',pad=0.05)
     fig.set_label('mm')
     
-    title = 'diff_'+ prev +'h_'+ tipoUmidadetitle +'_GFS.png'
+    #if tipoUmidade == 'umidade_GL':
+    #  tipoUmidadetitle = 'OPER'
+    #else:
+    #  tipoUmidadetitle = 'LDAS'
+
+    title = 'diff_'+ prev +'h_'+ tipoUmidadetitle +'_MERGE.png'
 
     plt.savefig(path_out + title, bbox_inches='tight', pad_inches=.2, dpi=300)
     print('Saved: {}'.format(title))
     DS_NCEP.close()
-    GFS.close()
+    MERGE.close()
     return
 
 prev = '24'
