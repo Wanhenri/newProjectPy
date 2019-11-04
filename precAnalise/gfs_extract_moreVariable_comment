@@ -1,0 +1,33 @@
+#var=APCP
+#previsao=96
+#prev_in=78
+#for var in "APCP" "LHTFL"
+#do
+#    var_0_6 ${var} ${previsao} ${prev_in}
+#done
+#####
+#Como funciona?
+#var=APCP
+#previsao=(24 48 72 96 120 144 168)
+#prev_in=(06 30 54 78 102 126 150)
+#
+
+#Exemplo de um contador
+#CONTADOR=0
+#while [  $CONTADOR -lt 7 ]; do
+#    echo "$CONTADOR"
+#    for ((i=0; i<${#previsao[@]}; i++)); do
+#        echo "variavel: ${var}  | previsao: ${previsao[i]} |  prev_in:  ${prev_in[i]}  " 
+#        var_0_6 ${var} ${previsao[i]} ${prev_in[i]}
+#        #var_0_6 ${var} ${previsao} ${prev_in}
+#    done
+#    let CONTADOR=CONTADOR+1; 
+#done
+
+#Exemplo de como criar looping utilizando duas arrays
+#ARR_MPOINT=(24 48 72 96 120 144 168)
+#ARR_LVNAME=(06 30 54 78 102 126 150)
+#
+#for ((i=0; i<${#ARR_MPOINT[@]}; i++)); do
+#    echo "${ARR_LVNAME[i]}     ${ARR_MPOINT[i]}  " 
+#done
