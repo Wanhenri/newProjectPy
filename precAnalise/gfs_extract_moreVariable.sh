@@ -5,7 +5,7 @@
 inctime=/dados/dmdpesq/Proj_GFS/bin/inctime/inctime
 
 limpe_dir() {
-    
+    #funcao para limpar os dados anteriores
     echo "Limpando diretórios"
     rm /dados/dmdpesq/Proj_GFS/etapa1/12/*
     rm /dados/dmdpesq/Proj_GFS/etapa2/12/*
@@ -17,20 +17,34 @@ limpe_dir() {
 }
 
 interp() {
-    
-    fileMergeInterp=/stornext/online8/bamc/w.santos/Experimento_umidade_do_solo/GFS/prec_201401.nc
-    fileGFS=/dados/dmdpesq/Proj_GFS/etapa4/12/${2}/prev.2014.jan_${1}_12z_${2}h.nc
-    fileOutGFSInterpMERGE=/dados/dmdpesq/Experimento_umidade_do_solo/GFS/prev.2014.jan_${1}_12z_${2}h_interp.nc
+    ##funcao para interpolar os dados
+    dir_MergeInterp=/stornext/online8/bamc/w.santos/Experimento_umidade_do_solo/GFS
+    dir_fileGFS=/dados/dmdpesq/Proj_GFS/etapa4/12/${2}
+    dir_fileOutGFSInterpMERGE=/dados/dmdpesq/Experimento_umidade_do_solo/GFS
+
+    fileMergeInterp=${dir_MergeInterp}/prec_201401.nc
+
+    fileGFS=${dir_fileGFS}/prev.2014.jan_${1}_12z_${2}h.nc
+
+    fileOutGFSInterpMERGE=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_${1}_12z_${2}h_interp.nc
+
+    fileconcatVars=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_*_12z_${2}h_interp.nc
+
+    fileconcatVars_out=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_12z_${2}h_interp.nc
+
+
     #Interpolar uma grade Gaussiana qualquer (e.g. 384x190-cfs) para (128x64-echam)
     cdo -r remapbil,${fileMergeInterp} ${fileGFS} ${fileOutGFSInterpMERGE}
-
+    #concatenar
+    #cdo -r merge ${fileconcatVars} ${fileconcatVars_out}
+        
 }
 
 var_0_6() {
 
     limpe_dir ${1} ${2} 
 
-    gribs=/dados/dmdpesq/Proj_GFS/GFS
+    gribs=GFS
     #pre inctime
     fct=24
     #previ file gfs
@@ -79,10 +93,10 @@ var_0_6() {
 
 
 var_6() {
-
+    
     limpe_dir ${1} ${2} 
 
-    gribs=/dados/dmdpesq/Proj_GFS/GFS
+    gribs=GFS
     #pre inctime
     fct=24
     #previ file gfs
@@ -93,49 +107,64 @@ var_6() {
     dataf=2014013118
     data=${datai}
     while [ ${data} -le ${dataf} ]
-        do
-        	yyyymm=$(echo ${data} | cut -c 1-6)
-        	ddhh=$(echo ${data} | cut -c 7-10)
-        	hh=$(echo ${data} | cut -c 9-10)
-        	dataanl=${data}
-        	echo "${hh}"
-        	echo "${yyyymm}/${ddhh}"
+    do
+       	yyyymm=$(echo ${data} | cut -c 1-6)
+       	ddhh=$(echo ${data} | cut -c 7-10)
+       	hh=$(echo ${data} | cut -c 9-10)
+       	dataanl=${data}
+       	echo "${hh}"
+       	echo "${yyyymm}/${ddhh}"
 
-            dataprev=$(${inctime} ${dataanl} +${tfct}hr %y4%m2%d2%h2)
-        	fileout_nc=etapa3/${hh}/${tfct}/gfs.t${hh}z.pgrb2f${tfct}.${dataprev}_${1}.nc
+        dataprev=$(${inctime} ${dataanl} +${tfct}hr %y4%m2%d2%h2)
+    	fileout_nc=etapa3/${hh}/${tfct}/gfs.t${hh}z.pgrb2f${tfct}.${dataprev}_${1}.nc
         	
-            arq_prev=${gribs}/${yyyymm}/${ddhh}/gfs.t${hh}z.pgrb2f${tfct}.${dataanl}.grib2
+        arq_prev=${gribs}/${yyyymm}/${ddhh}/gfs.t${hh}z.pgrb2f${tfct}.${dataanl}.grib2
             
-            #Extrai a variavel e converte arquivo grib2 para netcdf
-            ~/bin/wgrib2 $arq_prev -match "(:SPFH:2 m above ground:)" -netcdf $fileout_nc  
+        #Extrai a variavel e converte arquivo grib2 para netcdf
+        ~/bin/wgrib2 $arq_prev -match "(:${var}:2 m above ground)" -netcdf $fileout_nc  
 
-        	data=$(${inctime} ${data} +${fct}hr %y4%m2%d2%h2)
-        done
-        #Juntar várias arquivos com váriáveis diferente em um único arquivo
-        cdo -r mergetime etapa3/12/${tfct}/*201401*.nc etapa4/12/${tfct}/prev.2014.jan_${1}_12z_${tfct}h.nc
+       	data=$(${inctime} ${data} +${fct}hr %y4%m2%d2%h2)
+    done
+    #Juntar várias arquivos com váriáveis diferente em um único arquivo
+    cdo -r mergetime etapa3/12/${tfct}/*201401*.nc etapa4/12/${tfct}/prev.2014.jan_${1}_12z_${tfct}h.nc
 
-        interp ${1} ${tfct}
+    interp ${1} ${tfct}
 }
 
-previsao=24
-for var in SPFH
+
+for var in "SPFH"  "TMP"
 do
-    var_6 ${var} ${previsao} 
+ 
+    for previsao in $(seq 24 24 168)
+    do 
+        echo "${var}" 
+        echo "$previsao"
+
+        var_6 ${var} ${previsao}
+    done
 done
 
-##(:LHTFL:|:APCP:|:SHTFL:)
 
-for var in "LHTFL"
+prev_in=06
+incr=24
+for var in  "LHTFL" "APCP" "SHTFL"
 do
-    while [[  $previsao -lt 192 ]] || [[  $prev_in -lt 174 ]]; do
+    for previsao in $(seq 24 24 168) 
+    do 
+        
         echo "${var}"
-        echo "$previsao"
         echo "$prev_in"
-
+        echo "$previsao"
+        
         var_0_6 ${var} ${previsao} ${prev_in}
 
-        let previsao=previsao+24; 
-        let prev_in=prev_in+24; 
+        let prev_in=$(($prev_in+$incr))
+        if [ $prev_in == 174 ] 
+        then
+            echo "ok"
+            prev_in=06
+        fi
+
     done
 done
 
