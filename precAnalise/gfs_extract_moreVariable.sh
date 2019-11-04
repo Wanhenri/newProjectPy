@@ -16,6 +16,19 @@ limpe_dir() {
 
 }
 
+concat_vars() {
+
+    dir_fileOutGFSInterpMERGE=/dados/dmdpesq/Experimento_umidade_do_solo/GFS
+
+    fileconcatVars=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_${1}_12z_*h_interp.nc
+
+    fileconcatVars_out=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_12z_${2}h_interp.nc
+
+    echo "CONCATENAR DADOS"
+    cdo -r merge ${fileconcatVars} ${fileconcatVars_out}
+
+}
+
 interp() {
     ##funcao para interpolar os dados
     dir_MergeInterp=/stornext/online8/bamc/w.santos/Experimento_umidade_do_solo/GFS
@@ -28,16 +41,14 @@ interp() {
 
     fileOutGFSInterpMERGE=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_${1}_12z_${2}h_interp.nc
 
-    fileconcatVars=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_*_12z_${2}h_interp.nc
+    fileconcatVars=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_${1}_12z_*h_interp.nc
 
     fileconcatVars_out=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_12z_${2}h_interp.nc
 
 
     #Interpolar uma grade Gaussiana qualquer (e.g. 384x190-cfs) para (128x64-echam)
     cdo -r remapbil,${fileMergeInterp} ${fileGFS} ${fileOutGFSInterpMERGE}
-    #concatenar
-    #cdo -r merge ${fileconcatVars} ${fileconcatVars_out}
-        
+      
 }
 
 var_0_6() {
@@ -137,8 +148,10 @@ do
  
     for previsao in $(seq 24 24 168)
     do 
-        echo "${var}" 
+        echo "*****************"
+        echo "Variavel: ${var}" 
         echo "$previsao"
+        echo "*****************"
 
         var_6 ${var} ${previsao}
     done
@@ -151,10 +164,11 @@ for var in  "LHTFL" "APCP" "SHTFL"
 do
     for previsao in $(seq 24 24 168) 
     do 
-        
+        echo "*****************"
         echo "${var}"
         echo "$prev_in"
         echo "$previsao"
+        echo "*****************"
         
         var_0_6 ${var} ${previsao} ${prev_in}
 
@@ -167,4 +181,36 @@ do
 
     done
 done
+
+for var in  "LHTFL" "APCP" "SHTFL" "SPFH"  "TMP"
+do
+    for previsao in $(seq 24 24 168)
+    do
+        echo "*****************"
+        echo "Variavel: ${var}" 
+        echo "$previsao"
+        echo "*****************"
+
+        concat_vars() ${var} ${previsao}
+    done
+done
+
+##Vars 0-6
+##(:LHTFL:|:APCP:|:SHTFL:)
+##var=APCP
+#previsao=24
+#prev_in=06
+#for var in "LHTFL" "SHTFL" "nulo"
+#do
+#    while [[  $previsao -lt 192 ]] || [[  $prev_in -lt 174 ]] || [[$var != "nulo"]]; do
+#        echo "${var}"
+#        echo "$previsao"
+#        echo "$prev_in"
+#
+#        var_0_6 ${var} ${previsao} ${prev_in}
+#
+#        let previsao=previsao+24; 
+#        let prev_in=prev_in+24; 
+#    done
+#done
 
