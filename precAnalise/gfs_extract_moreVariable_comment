@@ -31,3 +31,25 @@
 #for ((i=0; i<${#ARR_MPOINT[@]}; i++)); do
 #    echo "${ARR_LVNAME[i]}     ${ARR_MPOINT[i]}  " 
 #done
+
+
+##Vars 0-6
+##(:LHTFL:|:APCP:|:SHTFL:)
+##var=APCP
+#previsao=24
+#prev_in=06
+#for var in "LHTFL" "SHTFL" "nulo"
+#do
+#    while [[  $previsao -lt 192 ]] || [[  $prev_in -lt 174 ]] || [[$var != "nulo"]]; do
+#        echo "${var}"
+#        echo "$previsao"
+#        echo "$prev_in"
+#
+#        var_0_6 ${var} ${previsao} ${prev_in}
+#
+#        let previsao=previsao+24; 
+#        let prev_in=prev_in+24; 
+#    done
+#done
+
+
