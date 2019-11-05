@@ -2,10 +2,13 @@
 
 #https://www.nco.ncep.noaa.gov/pmb/products/gfs/gfs.t00z.pgrb2.0p25.f006.shtml
 
+#Todo o processo do Script leva em torno de 16 min para ser efetuado.
+
 inctime=/dados/dmdpesq/Proj_GFS/bin/inctime/inctime
 
+#funcao para limpar os dados anteriores
 limpe_dir() {
-    #funcao para limpar os dados anteriores
+    
     echo "Limpando diretórios"
     rm /dados/dmdpesq/Proj_GFS/etapa1/12/*
     rm /dados/dmdpesq/Proj_GFS/etapa2/12/*
@@ -16,16 +19,21 @@ limpe_dir() {
 
 }
 
+#limpa o diretorio com os arquivos GFS manipulados anteriormente
+limpe_dir_GFS() {
+   rm /dados/dmdpesq/Experimento_umidade_do_solo/GFS/*
+}
+
 concat_vars() {
 
     dir_fileOutGFSInterpMERGE=/dados/dmdpesq/Experimento_umidade_do_solo/GFS
 
-    fileconcatVars=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_${1}_12z_*h_interp.nc
+    #fileconcatVars=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_*_12z_${1}h_interp.nc
 
-    fileconcatVars_out=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_12z_${2}h_interp.nc
+    fileconcatVars_out=${dir_fileOutGFSInterpMERGE}/prev.2014.jan_12z_${1}h_interp.nc
 
     echo "CONCATENAR DADOS"
-    cdo -r merge ${fileconcatVars} ${fileconcatVars_out}
+    cdo -r merge ${dir_fileOutGFSInterpMERGE}/prev.2014.jan_*_12z_${1}h_interp.nc ${fileconcatVars_out}
 
 }
 
@@ -83,18 +91,18 @@ var_0_6() {
                 
         	done
 
-        	fileout_nc=etapa2/${hh}/gfs.t${hh}z.pgrb2f${tfct}.${dataanl}_${1}.nc #:TMP:surface:
+            fileout_nc=etapa2/${hh}/gfs.t${hh}z.pgrb2f${tfct}.${dataanl}_${1}.nc #:TMP:surface:
 
             #Converte arquivo grib2 para netcdf
-        	~/bin/wgrib2 $fileout_acumula -netcdf ${fileout_nc}
+            ~/bin/wgrib2 $fileout_acumula -netcdf ${fileout_nc}
 
-        	#dataprev=$(${inctime} ${dataanl} +${fct}hr %y4%m2%d2%h2)
+            #dataprev=$(${inctime} ${dataanl} +${fct}hr %y4%m2%d2%h2)
             dataprev=$(${inctime} ${dataanl} +${tfct}hr %y4%m2%d2%h2)
 
             #Calcular a somar dos passos de tempo
-        	cdo timselsum,28,0 ${fileout_nc} etapa3/${i}/${tfct}/gfs.t${hh}z.pgrb2f${tfct}.${dataprev}_${1}.nc	    
+            cdo timselsum,28,0 ${fileout_nc} etapa3/${i}/${tfct}/gfs.t${hh}z.pgrb2f${tfct}.${dataprev}_${1}.nc	    
 
-        	data=$(${inctime} ${data} +${fct}hr %y4%m2%d2%h2)
+            data=$(${inctime} ${data} +${fct}hr %y4%m2%d2%h2)
         done
         #Juntar várias arquivos com váriáveis diferente em um único arquivo
         cdo -r mergetime etapa3/12/${tfct}/*201401*.nc etapa4/12/${tfct}/prev.2014.jan_${1}_12z_${tfct}h.nc
@@ -142,6 +150,8 @@ var_6() {
     interp ${1} ${tfct}
 }
 
+#limpa o diretorio com os arquivos GFS manipulados anteriormente
+limpe_dir_GFS
 
 for var in "SPFH"  "TMP"
 do
@@ -182,35 +192,13 @@ do
     done
 done
 
-for var in  "LHTFL" "APCP" "SHTFL" "SPFH"  "TMP"
-do
-    for previsao in $(seq 24 24 168)
-    do
-        echo "*****************"
-        echo "Variavel: ${var}" 
-        echo "$previsao"
-        echo "*****************"
 
-        concat_vars() ${var} ${previsao}
-    done
+for previsao in $(seq 24 24 168)
+do
+    echo "*****************"    
+    echo "$previsao"
+    echo "*****************"
+    concat_vars ${previsao} 
 done
 
-##Vars 0-6
-##(:LHTFL:|:APCP:|:SHTFL:)
-##var=APCP
-#previsao=24
-#prev_in=06
-#for var in "LHTFL" "SHTFL" "nulo"
-#do
-#    while [[  $previsao -lt 192 ]] || [[  $prev_in -lt 174 ]] || [[$var != "nulo"]]; do
-#        echo "${var}"
-#        echo "$previsao"
-#        echo "$prev_in"
-#
-#        var_0_6 ${var} ${previsao} ${prev_in}
-#
-#        let previsao=previsao+24; 
-#        let prev_in=prev_in+24; 
-#    done
-#done
 
