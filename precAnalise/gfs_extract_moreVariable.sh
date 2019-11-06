@@ -140,7 +140,20 @@ var_6() {
         arq_prev=${gribs}/${yyyymm}/${ddhh}/gfs.t${hh}z.pgrb2f${tfct}.${dataanl}.grib2
             
         #Extrai a variavel e converte arquivo grib2 para netcdf
-        ~/bin/wgrib2 $arq_prev -match "(:${var}:2 m above ground)" -netcdf $fileout_nc  
+        #~/bin/wgrib2 $arq_prev -match "(:${var}:2 m above ground)" -netcdf $fileout_nc
+        
+        if [ $var = "LHTFL" ]
+        then
+            #Extrai a variavel e converte arquivo grib2 para netcdf
+            ~/bin/wgrib2 $arq_prev -match "(:${1}:)" -netcdf $fileout_nc                        
+        elif [ $var = "SHTFL" ]      
+        then
+            #Extrai a variavel e converte arquivo grib2 para netcdf
+            ~/bin/wgrib2 $arq_prev -match "(:${1}:)" -netcdf $fileout_nc            
+        else       
+            #Extrai a variavel e converte arquivo grib2 para netcdf     
+            ~/bin/wgrib2 $arq_prev -match "(:${1}:2 m above ground)" -netcdf $fileout_nc  
+        fi
 
        	data=$(${inctime} ${data} +${fct}hr %y4%m2%d2%h2)
     done
@@ -150,10 +163,11 @@ var_6() {
     interp ${1} ${tfct}
 }
 
+
 #limpa o diretorio com os arquivos GFS manipulados anteriormente
 limpe_dir_GFS
 
-for var in "SPFH"  "TMP"
+for var in "SPFH"  "TMP" "LHTFL" "SHTFL"
 do
  
     for previsao in $(seq 24 24 168)
@@ -167,10 +181,9 @@ do
     done
 done
 
-
 prev_in=06
 incr=24
-for var in  "LHTFL" "APCP" "SHTFL"
+for var in  "APCP" 
 do
     for previsao in $(seq 24 24 168) 
     do 
