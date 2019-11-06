@@ -14,9 +14,8 @@ def plotaNovaUmidade(previsao):
       print('ind',ind) 
       path = "/dados/dmdpesq/Experimento_umidade_do_solo/umidade_Nova/"
       path_out ="/dados/dmdpesq/Experimento_umidade_do_solo/out/"
-      #name_file = 'JAN2014_'+ prev +'Z_12Z.nc'
-      name_file = 'JAN2014_'+ prev +'Z_12Z_interp.nc'
-
+      name_file = 'JAN2014_'+ prev +'Z_12Z.nc'
+      #name_file = 'JAN2014_'+ prev +'Z_12Z_interp.nc'
       #umidade = 'Nova_Umidade_do_Solo'
       umidade = 'LDAS'
       text = umidade
@@ -81,10 +80,10 @@ def plotaNovaUmidade(previsao):
   
   
       ax.coastlines(resolution='110m')
-      ax.add_feature(cartopy.feature.BORDERS, linestyle=':')
+      ax.add_feature(cartopy.feature.OCEAN, zorder=100, facecolor='white', linestyle=':')
       #for BR
-      #ax.set_extent([-85, -30, -60, 15])
-      ax.set_extent([-83, -34, -47.5, 10])
+      ax.set_extent([-85, -30, -60, 15])
+      #ax.set_extent([-83, -34, -47.5, 10])
       ax.stock_img()
       ax.set_title(
                              ' BRAZILIAN ATMOSPHERIC MODEL (BAM)' 
@@ -102,12 +101,11 @@ def plotaNovaUmidade(previsao):
                            fontsize=18
       )
       #+ config['variavel'][ind]
-      #(name_file[7:11] if prev =='120' or prev =='144' or prev == '168' else name_file[8:10])
   
       fig.colorbar(cp, orientation='horizontal',pad=0.05)
       fig.set_label('mm')
   
-      title = (name_file[0:11] if prev =='120' or prev =='144' or prev == '168' else name_file[0:10]) + 'h_12Z_'+ umidade +'_'+ config['variavel'][ind]+'_interp.png'
+      title = (name_file[0:11] if prev =='120' or prev =='144' or prev == '168' else name_file[0:10]) + 'h_12Z_'+ umidade +'_'+ config['variavel'][ind]+'_withMask.png'
   
       plt.savefig(path_out + title, bbox_inches='tight', pad_inches=.2, dpi=300)
       print('Saved: {}'.format(title))

@@ -13,6 +13,8 @@ def plotaGFS(previsao):
         print('ind',ind)
         path = "/dados/dmdpesq/Experimento_umidade_do_solo/GFS/"    
         path_out ="/dados/dmdpesq/Experimento_umidade_do_solo/out/"
+        #name_file = 'JAN2014_'+ prev +'Z_12Z.nc'
+        #name_file = 'prev.2014.jan.'+ prev +'h.nc'
         name_file = 'prev.2014.jan_12z_'+ prev +'h_interp.nc'
         umidade = 'GFS'
         text = 'Condição inicial:' + umidade
@@ -40,6 +42,10 @@ def plotaGFS(previsao):
         units = config['ds'][ind].attrs['units']
 
 
+
+        #print(longName)
+        #exit(0)
+
         da = config['ds'][ind].mean('time')
         lons = GFS.variables['lon'][:]
         lats = GFS.variables['lat'][:]
@@ -56,8 +62,34 @@ def plotaGFS(previsao):
           #Para a demais variaveis
           cp = plt.contourf(lons,lats,da, clevs, cmap=cm.rainbow,zorder=1)
 
+        #if ind == 0:
+        #    cp = plt.contourf(lons,lats,da, clevs, colors=color,zorder=1)
+        #elif ind == 1:
+        #    cp = plt.contourf(lons,lats,da, cmap=cm.rainbow,zorder=1)
+        #elif ind == 2:
+        #    cp = plt.contourf(lons,lats,da, cmap=cm.rainbow,zorder=1)
+        #else:
+        #    cp = plt.contourf(lons,lats,da, clevs, cmap=cm.rainbow,zorder=1)
 
 
+
+
+
+    #    da = GFS.APCP_surface.mean('time')
+    #    
+    #    lons = GFS.variables['longitude'][:]
+    #    lats = GFS.variables['latitude'][:]
+    #
+    #
+    #    fig, ax = plt.subplots(111,figsize=(15,15), dpi=200)
+    #
+    #    ax = plt.axes(projection=ccrs.PlateCarree())
+    #    clevs=[-70,2,4,6,8,10,12,14,16,18,70]
+    #    color=['white','dodgerblue','darkturquoise','mediumspringgreen','lime','yellow',
+    #           'orange','goldenrod','red','firebrick']
+    #    cp = plt.contourf(lons,lats,da, clevs, colors=color,zorder=1)
+    #
+    #
         ax.coastlines(resolution='110m')
         ax.add_feature(cartopy.feature.BORDERS, linestyle=':')
         #for BR

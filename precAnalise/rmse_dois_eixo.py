@@ -4,6 +4,9 @@ import numpy as np
 import seaborn as sns
 from matplotlib import pylab
 from matplotlib.ticker import StrMethodFormatter
+from sys import exit
+
+
 
 def rmse(predict, actual):
     #predict = np.array(predict)
@@ -14,6 +17,10 @@ def rmse(predict, actual):
     mean_square_diff = square_diff.mean()
     score = np.sqrt(mean_square_diff)
     return score
+
+def data(actual):
+    scoredata = actual.mean()
+    return scoredata
 
 prev = '24'
 var= 'prec'
@@ -44,6 +51,11 @@ for ind in range(0,7,1):
     lista_modeloGFS = []
     lista_previsao = []
 
+    lista_data_umidadeGL = []
+    lista_data_umidadeNova = []
+    lista_data_modeloGFS = []
+
+
     for previsao in range(24,192,24):
         prev = str(previsao)
         print(prev)
@@ -54,7 +66,7 @@ for ind in range(0,7,1):
         path_3 = "/dados/dmdpesq/Experimento_umidade_do_solo/umidade_Nova/"
         name_file_3 = 'JAN2014_'+ prev +'Z_12Z_interp.nc'
         path_4 = "/dados/dmdpesq/Experimento_umidade_do_solo/GFS/"    
-        name_file_4 = 'prev.2014.jan_12z_'+ prev +'h_interp.nc'
+        name_file_4 = 'prev.2014.jan.'+ prev +'h_interp.nc'
         path_out ="/dados/dmdpesq/Experimento_umidade_do_solo/out/"  
 
 
@@ -81,7 +93,11 @@ for ind in range(0,7,1):
         obs = MERGE.prec.isel(time=slice(None, 31), lat=slice(latNorte,latSul), lon=slice(lonOeste,lonLest)).mean(dim="lat").mean(dim="lon")
 
         previsao = prev
-
+        ###Copiar aqui
+	###
+        #teste = valorOri(umidadeGL)
+        #print(teste)
+        #exit(0)
         rmse_umidadeGL = rmse(obs, umidadeGL)
         #print('prev ', prev,'rmse umidade GL: ', rmse_umidadeGL)
         rmse_umidadeNova = rmse(obs, umidadeNova)
@@ -94,32 +110,60 @@ for ind in range(0,7,1):
         lista_umidadeNova.append(rmse_umidadeNova)
         lista_modeloGFS.append(rmse_modeloGFS)
 
+        ###até aqui
+
+        ############################################################
+        #teste = valorOri(umidadeGL)
+        #print(teste)
+        #exit(0)
+        data_umidadeGL = data(umidadeGL)
+        #print('value umidade GL: ', data_umidadeGL)
+        data_umidadeNova = data(umidadeNova)
+        #print('value umidade nova: ', data_umidadeNova)
+        data_modeloGFS = data(modeloGFS)
+        #print('value GFS: ',data_modeloGFS)
+
+        #lista_previsao.append(previsao)
+        lista_data_umidadeGL.append(data_umidadeGL)
+        lista_data_umidadeNova.append(data_umidadeNova)
+        lista_data_modeloGFS.append(data_modeloGFS)
+        ############################################################
 
     pylab.rcParams['figure.figsize'] = (30,10)
-
+    fig = plt.figure(figsize=(30,10))
+    fig, ax1 = plt.subplots()
     sns.set_style("darkgrid", {"axes.facecolor": ".9"})
     sns.set_context("notebook", font_scale=1.5, rc={"lines.linewidth": 2.5})
     plt.tight_layout()
 
     plt.gca().yaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}'))
 
-    #plt.figtext(.5,.96,'Root Mean Squared Error (RMSE)', fontsize=30, ha='center')
-    #plt.figtext(.5,.90,'Janeiro/2014',fontsize=20,ha='center')
-    plt.figtext(.5,.96,'20140101 12Z', fontsize=30, ha='center')
-    plt.figtext(.5,.90,'RMSE  ' + longName[8:30] + '    modelRef: MERGE' ,fontsize=30,ha='center')
-    plt.figtext(.86,.90,'Região: '+ config['Regiao'][ind] +' Setor: '+ config['Setor'][ind] ,fontsize=20,ha='right')
-
-    plt.plot(lista_previsao,lista_umidadeGL,color='orange', label='umidade GL')
-    plt.plot(lista_previsao,lista_umidadeNova,color='r', label='Nova umidade')
-    plt.plot(lista_previsao,lista_modeloGFS, color='g', label='GFS')
+    plt.figtext(.5,.99,'Root Mean Squared Error (RMSE)', fontsize=30, ha='center')
+    plt.figtext(.5,.95,'Janeiro/2014',fontsize=20,ha='center')
+    plt.figtext(.86,.95,'Região: '+ config['Regiao'][ind] +' Setor: '+ config['Setor'][ind] ,fontsize=20,ha='right')
+   
+     ###copiar aqui
+    #Eixo 1
+    ax1.set_ylabel('RMSE')
+    lns1 = plt.plot(lista_previsao,lista_umidadeGL,color='orange', label='OPER')
+    lns2 = plt.plot(lista_previsao,lista_umidadeNova,color='r', label='LDAS')
+    #plt.plot(lista_previsao,lista_modeloGFS, color='g', label='GFS')
+    #plt.ylim(0,7)
+    #plt.ylabel(longName[8:30], labelpad=30)
+    
+    #Eixo 2
+    ax2 = ax1.twinx()
+    ax2.set_ylabel('orig', color='b')
+    lns3 = plt.plot(lista_previsao,lista_data_umidadeGL, marker='o', linestyle='',color='orange', label='OPER')
+    lns4 = plt.plot(lista_previsao,lista_data_umidadeNova, marker='o', linestyle='',color='r', label='LDAS')
+    #lns6 = ax2.plt(lista_previsao,lista_data_modeloGFS, marker='o', linestyle='', color='g', label='GFS')
+        
     plt.xticks(rotation=45) 
-    plt.ylim(0,7)
-
-    plt.ylabel(longName[8:30], labelpad=30)
     plt.xlabel('Previsão', labelpad=30)
-
-    title = 'regiao_'+ config['Regiao'][ind] +'_'+ config['Setor'][ind]+'_rmse_PREC_withMERGE.png'
+    title = 'regiao_'+ config['Regiao'][ind] +'_'+ config['Setor'][ind]+'_rmse.png'
     plt.legend(fontsize=17, frameon=True)
+    ax1.legend(loc='upper left', bbox_to_anchor=(0.1, -0.15), shadow=True, ncol=5)
+    ax2.legend(loc='upper left', bbox_to_anchor=(0.6, -0.15), shadow=True, ncol=5)
     plt.savefig(path_out + title, bbox_inches='tight', pad_inches=.2, dpi=300)
     print('Saved: {}'.format(title))
     plt.cla() #means clear current axis
@@ -131,6 +175,10 @@ for ind in range(0,7,1):
     MERGE.close()
 
 
+   
+
+    
+    
 #set_extent([x0,x1,y0,y1])
 #America do Sul
 #set_extent([-82, -34, -50, 12])

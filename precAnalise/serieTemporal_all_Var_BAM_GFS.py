@@ -32,7 +32,7 @@ def serieTemporal(prev):
     for ind in range(0,7,1):
         print('ind',ind)
 
-        for indVars in range(0,8,1):
+        for indVars in range(0,5,1):
             print('indVars',indVars)
 
         #for ind in range(0,7,1):
@@ -46,6 +46,9 @@ def serieTemporal(prev):
 
             path_3 = "/dados/dmdpesq/Experimento_umidade_do_solo/umidade_Nova/"
             name_file_3 = 'JAN2014_'+ prev +'Z_12Z_interp.nc'
+
+            path_4 = "/dados/dmdpesq/Experimento_umidade_do_solo/GFS/"    
+            name_file_4 = 'prev.2014.jan_12z_'+ prev +'h_interp.nc'
 
             path_out ="/dados/dmdpesq/Experimento_umidade_do_solo/out/"   
 
@@ -65,48 +68,45 @@ def serieTemporal(prev):
 
             DS_NCEP = xr.open_dataset(path_1 + name_file_1)
             DS_NCEP_umidade_nova = xr.open_dataset(path_3 + name_file_3)
+            GFS = xr.open_dataset(path_4 + name_file_4)
 
             vars = {
             'ds':[
                 DS_NCEP.prec              
-                ,DS_NCEP.ussl               
-                ,DS_NCEP.uzrs               
-                ,DS_NCEP.uzds               
                 ,DS_NCEP.cssf               
                 ,DS_NCEP.clsf               
                 ,DS_NCEP.t2mt               
                 ,DS_NCEP.q2mt   ],
             'ds_nova_umidade':[
                 DS_NCEP_umidade_nova.prec 
-                ,DS_NCEP_umidade_nova.ussl  
-                ,DS_NCEP_umidade_nova.uzrs  
-                ,DS_NCEP_umidade_nova.uzds 
                 ,DS_NCEP_umidade_nova.cssf  
                 ,DS_NCEP_umidade_nova.clsf  
                 ,DS_NCEP_umidade_nova.t2mt  
                 ,DS_NCEP_umidade_nova.q2mt],
+            'ds_GFS': [
+                GFS.APCP_surface
+                ,GFS.SHTFL_surface
+                ,GFS.LHTFL_surface
+                ,GFS.TMP_2maboveground
+                ,GFS.SPFH_2maboveground
+            ],
             'variavel':[
-                'PREC'                    
-                ,'USSL'                     
-                ,'UZRS'                     
-                ,'UZDS'                     
+                'PREC'                       
                 ,'CSSF'                     
                 ,'CLSF'                     
                 ,'T2MT'                     
                 ,'Q2MT'       ]
             }
 
-            longName = vars['ds'][indVars].attrs['long_name']
-            longNameEditNameVAR = longName[10:50]
-            print(longNameEditNameVAR)
+            longName = vars['ds_GFS'][indVars].attrs['long_name']
+            units = vars['ds_GFS'][indVars].attrs['units']
+
 
             plt.figtext(.5,.94,'20140101 12Z  ' + prev +'h' , fontsize=20, ha='center')
-            plt.figtext(.5,.90,'Serie Temporal  ' + longNameEditNameVAR ,fontsize=20,ha='center')
+            plt.figtext(.5,.90,'Serie Temporal  ' + longName ,fontsize=20,ha='center')
             plt.figtext(.86,.90,'Região: '+ config['Regiao'][ind] +' Setor: '+ config['Setor'][ind] ,fontsize=20,ha='right')
 
 
-            #longName = DS_NCEP.prec.attrs['long_name']
-            longName = vars['ds'][indVars].attrs['long_name']
 
             xTickTime = DS_NCEP.prec['time'].isel(time=slice(None, 31))  
 
@@ -114,27 +114,23 @@ def serieTemporal(prev):
             p1 = vars['ds'][indVars].isel(time=slice(None, 31), lat=slice(latNorte,latSul), lon=slice(lonOeste,lonLest)).mean(dim="lat").mean(dim="lon")
             plt.plot(xTickTime,p1,color='orange', label='umidade GL')
             plt.xticks(rotation=45) 
-
-            #DS_NCEP_umidade_nova = xr.open_dataset(path_3 + name_file_3)
+            
             p3 = vars['ds_nova_umidade'][indVars].isel(time=slice(None, 31), lat=slice(latNorte,latSul), lon=slice(lonOeste,lonLest)).mean(dim="lat").mean(dim="lon")
             plt.plot(xTickTime,p3,color='r', label='Nova umidade')
             plt.xticks(rotation=45) 
 
-            #plt.ylim(0,25)
+            p4 = vars['ds_GFS'][indVars].isel(time=slice(None, 31), lat=slice(latNorte,latSul), lon=slice(lonOeste,lonLest)).mean(dim="lat").mean(dim="lon")
+            plt.plot(xTickTime,p4,color='k', label='GFS')
+            plt.xticks(rotation=45) 
 
-            if indVars == 0:
-            #Para Precipitação   
-                longNameEditUnit = longName[51:63]
-                plt.ylabel(longName[15:30] + ' [ '+ longNameEditUnit + ']', labelpad=30)
-            else:
-            #Para a demais variaveis
-                longNameEditUnit = longName[51:54]
-                plt.ylabel(longName[8:30] + ' [ '+ longNameEditUnit + ']', labelpad=30)
+
+            plt.ylabel(longName + ' [ '+ units + ']', labelpad=30)
+
 
             #plt.ylabel(longName[8:30], labelpad=30)
             plt.xlabel('', labelpad=30)
 
-            title = 'previsao_'+ prev +'_regiao_'+ config['Regiao'][ind] +'_'+ config['Setor'][ind]+'_SerieTemporal_'+ vars['variavel'][indVars] +'.png'
+            title = 'previsao_'+ prev +'_regiao_'+ config['Regiao'][ind] +'_'+ config['Setor'][ind]+'_SerieTemporal_'+ vars['variavel'][indVars] +'_withGFS.png'
             plt.legend(fontsize=17, frameon=True)
             plt.savefig(path_out + title, bbox_inches='tight', pad_inches=.2, dpi=300, figsize=(15,15))
             print('Saved: {}'.format(title))
@@ -143,10 +139,11 @@ def serieTemporal(prev):
             plt.close()
             DS_NCEP.close()
             DS_NCEP_umidade_nova.close()
+            GFS.close()
 
     return
 
-var= 'prec'
+
 prev = '24'
 for prev in range(24,192,24):
   print('prev',prev)
