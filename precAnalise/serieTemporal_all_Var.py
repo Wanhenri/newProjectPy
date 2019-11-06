@@ -28,50 +28,6 @@ def serieTemporal(prev):
       'lonLest' :[-69   ,-1         ,-79            ,-1         ,-79        ,-1        ,-153        ]
     }
 
-#vars['ds'][indVars]
-
-#    vars = {
-#    'ds':[
-#        DS_NCEP.prec              
-#        ,DS_NCEP.ussl               
-#        ,DS_NCEP.uzrs               
-#        ,DS_NCEP.uzds               
-#        ,DS_NCEP.cssf               
-#        ,DS_NCEP.clsf               
-#        ,DS_NCEP.t2mt               
-#        ,DS_NCEP.q2mt   ],
-#    'ds_nova_umidade':[
-#        DS_NCEP_umidade_nova.prec 
-#        ,DS_NCEP_umidade_nova.ussl  
-#        ,DS_NCEP_umidade_nova.uzrs  
-#        ,DS_NCEP_umidade_nova.uzds 
-#        ,DS_NCEP_umidade_nova.cssf  
-#        ,DS_NCEP_umidade_nova.clsf  
-#        ,DS_NCEP_umidade_nova.t2mt  
-#        ,DS_NCEP_umidade_nova.q2mt],
-#    'variavel':[
-#        'PREC'                    
-#        ,'USSL'                     
-#        ,'UZRS'                     
-#        ,'UZDS'                     
-#        ,'CSSF'                     
-#        ,'CLSF'                     
-#        ,'T2MT'                     
-#        ,'Q2MT'       ],
-#    'niveis':[
-#        prec                      
-#        ,ussl                       
-#        ,uzrs                       
-#        , uzds                      
-#        ,cssf                       
-#        ,clsf                       
-#        ,t2mt                       
-#        ,q2mt]
-#    }
-
-
-    #for indVars in range(0,8,1):
-    #    print('indVars',indVars) 
 
     for ind in range(0,7,1):
         print('ind',ind)
