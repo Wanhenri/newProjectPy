@@ -8,17 +8,10 @@ from sys import exit
 
 
 
-def rmse(predict, actual):
-    
-    #predict = np.array(predict)
-    #actual = np.array(actual)
-
-    difference = actual - predict 
-    square_diff = np.square(difference)
-    mean_square_diff = square_diff.mean()
-    score = np.sqrt(mean_square_diff)
+def bias(predict, actual):
+    difference = actual - predict                 
+    score = difference.mean()     
     return score
-
 
 #prev = '24'
 #var= 'prec'
@@ -111,12 +104,12 @@ for ind in range(0,7,1):
             
             previsao = prev
             
-            rmse_umidadeGL = rmse(modeloGFS, umidadeGL)
-            rmse_umidadeNova = rmse(modeloGFS, umidadeNova)
+            bias_umidadeGL = bias(modeloGFS, umidadeGL)
+            bias_umidadeNova = bias(modeloGFS, umidadeNova)
 
             lista_previsao.append(previsao)
-            lista_umidadeGL.append(rmse_umidadeGL)
-            lista_umidadeNova.append(rmse_umidadeNova)
+            lista_umidadeGL.append(bias_umidadeGL)
+            lista_umidadeNova.append(bias_umidadeNova)
   
         pylab.rcParams['figure.figsize'] = (30,10)
         #fig = plt.figure(figsize=(30,10))
@@ -126,9 +119,12 @@ for ind in range(0,7,1):
         plt.tight_layout()
 
         plt.gca().yaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}'))
+        plt.axhline(y=0, color='black')
 
-        plt.figtext(.5,.99,'Root Mean Squared Error (RMSE)   ' + longName + '    modelRef: GFS', fontsize=30, ha='center')
-        plt.figtext(.5,.95,'201401 12z'  + prev +'h' ,fontsize=20,ha='center')
+        plt.gca().yaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}'))
+
+        plt.figtext(.5,.96,'20140101 12Z', fontsize=30, ha='center')
+        plt.figtext(.5,.90,'BIAS  ' +  longName ,fontsize=30,ha='center')
         plt.figtext(.86,.95,'Região: '+ config['Regiao'][ind] +' Setor: '+ config['Setor'][ind] ,fontsize=20,ha='right')
     
         plt.plot(lista_previsao,lista_umidadeGL,color='orange', label='OPER')
@@ -136,7 +132,7 @@ for ind in range(0,7,1):
 
         plt.xticks(rotation=45) 
         plt.xlabel('Previsão', labelpad=30)
-        title = 'regiao_'+ config['Regiao'][ind] +'_'+ config['Setor'][ind]+'_rmse_'+vars['variavel'][indVars] +'_withGFS.png'
+        title = 'regiao_'+ config['Regiao'][ind] +'_'+ config['Setor'][ind]+'_bias_'+vars['variavel'][indVars] +'_withGFS.png'
                 
         plt.legend(fontsize=17, frameon=True)
         plt.savefig(path_out + title, bbox_inches='tight', pad_inches=.2, dpi=300)
