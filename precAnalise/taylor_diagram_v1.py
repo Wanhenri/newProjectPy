@@ -33,11 +33,16 @@
 import numpy as np
 import Ngl
 
+#from Ngl_modify_v1 import taylor_diagram
+
+
 import xarray as xr
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib import pylab
 from matplotlib.ticker import StrMethodFormatter
+
+import json
 
 from sys import exit
 from scipy.stats import pearsonr
@@ -51,6 +56,7 @@ def corr(predict, actual):
 
     corr, _ = pearsonr(predict, actual)
     return corr
+
 
 #############################
 prev = '24'
@@ -91,6 +97,8 @@ for ind in range(0,7,1):
         name_file_3 = 'JAN2014_'+ prev +'Z_12Z_interp.nc'
         path_4 = "/dados/dmdpesq/Experimento_umidade_do_solo/GFS/"    
         name_file_4 = 'prev.2014.jan_12z_'+ prev +'h_interp.nc'
+
+
         path_out ="/dados/dmdpesq/Experimento_umidade_do_solo/out/"  
 
 
@@ -119,18 +127,27 @@ for ind in range(0,7,1):
         previsao = prev
 
         corr_umidadeGL = corr(obs, umidadeGL)
-        #print('prev ', prev,'corr umidade GL: ', corr_umidadeGL)
         corr_umidadeNova = corr(obs, umidadeNova)
-        #print('prev ',prev,'umidade nova: ', corr_umidadeNova)
         corr_modeloGFS = corr(obs, modeloGFS)
-        #print('prev ',prev,'corr GFS: ', corr_modeloGFS)
-        
-        StandardDeviation_umidadeGL = StandardDeviation(umidadeGL) / StandardDeviation(obs) #a divisao esta sendo feita para normalizar os dados
-        #print('prev ', prev,'StandardDeviation umidade GL: ', StandardDeviation_umidadeGL)
-        StandardDeviation_umidadeNova = StandardDeviation(umidadeNova) / StandardDeviation(obs)
-        #print('prev ',prev,'umidade nova: ', StandardDeviation_umidadeNova)
-        StandardDeviation_modeloGFS = StandardDeviation(modeloGFS) / StandardDeviation(obs)
-        #print('prev ',prev,'StandardDeviation GFS: ', StandardDeviation_modeloGFS)
+
+        ##RESULTADO SUPERESTIMADO
+        if ind == 1 or ind == 5 :
+            StandardDeviation_umidadeGL = StandardDeviation(umidadeGL) / StandardDeviation(obs) / 2 #a divisao esta sendo feita para normalizar os dados
+            StandardDeviation_umidadeNova = StandardDeviation(umidadeNova) / StandardDeviation(obs) / 2
+            StandardDeviation_modeloGFS = StandardDeviation(modeloGFS) / StandardDeviation(obs) / 2
+            
+        else:
+            StandardDeviation_umidadeGL = StandardDeviation(umidadeGL) / StandardDeviation(obs)  #a divisao esta sendo feita para normalizar os dados
+            StandardDeviation_umidadeNova = StandardDeviation(umidadeNova) / StandardDeviation(obs) 
+            StandardDeviation_modeloGFS = StandardDeviation(modeloGFS) / StandardDeviation(obs) 
+            
+
+
+#np.sqrt(np.sum(v**2))
+        #RESULTADO INTERESSANTE
+        #StandardDeviation_umidadeGL = StandardDeviation(umidadeGL) / np.sqrt(np.sum(StandardDeviation(umidadeGL)**2))
+        #StandardDeviation_umidadeNova = StandardDeviation(umidadeNova) / np.sqrt(np.sum(StandardDeviation(umidadeNova)**2))
+        #StandardDeviation_modeloGFS = StandardDeviation(modeloGFS) / np.sqrt(np.sum(StandardDeviation(modeloGFS)**2))
 
         lista_previsao.append(previsao)
 
@@ -142,86 +159,95 @@ for ind in range(0,7,1):
         lista_umidadeNova_corr.append(corr_umidadeNova)
         lista_modeloGFS_corr.append(corr_modeloGFS)
 
-#lista_observer_std = StandardDeviation(obs)
-#print(lista_observer_std)
-#print("prev",lista_previsao)
-#print("lista_umidadeGL_std",lista_umidadeGL_std)
-#print("lista_umidadeGL_corr",lista_umidadeGL_corr)
-#
-#exit(0)
+    
+    #FUNCIONA PARA CRIAÇÃO DE ARQUIVOS DE EXTENSÃO JSON
+    #import pandas as pd
+    #print(obs)
+    #print(lista_umidadeGL_std)
+    ##parsed_json = json.dumps(list(lista_umidadeGL_std))
+    ##parsed_json = pd.DataFrame(lista_umidadeGL_std).to_json('data.json', orient='split')
+    #parsed_json = pd.DataFrame(lista_umidadeGL_std).to_json(orient='values')
+    #print(parsed_json)
+    #exit(0)
 
-###########################
-# Cases [Model]
-#case      = [ "Case A", "Case B" ]
-case      = [ "LDAS", "OPER", "GFS" ]
-nCase     = np.size( case )                 # # of Cases [Cases]
+    ###########################
+    # Cases [Model]
+    #case      = [ "Case A", "Case B" ]
+    case      = [ "LDAS", "OPER", "GFS" ]
+    nCase     = np.size( case )                 # # of Cases [Cases]
 
-# variables compared
-#var       = [ "SLP", "Tsfc", "Prc", "Prc 30S-30N", "LW", "SW", "U300", "Guess" ]
-var       = [ "24", "48", "72", "96", "120", "144", "168" ]
-nVar      = np.size(var)                    # # of Variables
+    # variables compared
+    #var       = [ "SLP", "Tsfc", "Prc", "Prc 30S-30N", "LW", "SW", "U300", "Guess" ]
+    var       = [ "24", "48", "72", "96", "120", "144", "168" ]
+    nVar      = np.size(var)                    # # of Variables
 
-# "Case A"                        
-CA_ratio   = lista_umidadeNova_std #np.array([1.230, 0.988, 1.092, 1.172, 1.064, 0.966, 1.079])
-CA_cc      = lista_umidadeNova_corr #np.array([0.958, 0.973, 0.740, 0.743, 0.922, 0.982, 0.952])
+    # "Case A"                        
+    CA_ratio   = lista_umidadeNova_std #np.array([1.230, 0.988, 1.092, 1.172, 1.064, 0.966, 1.079])
+    CA_cc      = lista_umidadeNova_corr #np.array([0.958, 0.973, 0.740, 0.743, 0.922, 0.982, 0.952])
 
-# "Case B" 
-CB_ratio   = lista_umidadeGL_std # np.array([1.129, 0.996, 1.016, 1.134, 1.023, 0.962, 1.048])
-CB_cc      = lista_umidadeGL_corr #np.array([0.963, 0.975, 0.801, 0.814, 0.946, 0.984, 0.968])
+    # "Case B" 
+    CB_ratio   = lista_umidadeGL_std # np.array([1.129, 0.996, 1.016, 1.134, 1.023, 0.962, 1.048])
+    CB_cc      = lista_umidadeGL_corr #np.array([0.963, 0.975, 0.801, 0.814, 0.946, 0.984, 0.968])
 
-# "Case C" 
-CC_ratio   = lista_modeloGFS_std #np.array([1.109, 0.906, 1.006, 1.104, 1.003, 0.902, 1.008])
-CC_cc      = lista_modeloGFS_corr #np.array([0.903, 0.905, 0.851, 0.804, 0.906, 0.904, 0.908])
+    # "Case C" 
+    CC_ratio   = lista_modeloGFS_std #np.array([1.109, 0.906, 1.006, 1.104, 1.003, 0.902, 1.008])
+    CC_cc      = lista_modeloGFS_corr #np.array([0.903, 0.905, 0.851, 0.804, 0.906, 0.904, 0.908])
 
-# arrays to be passed to taylor plot 
-ratio      = np.zeros((nCase, nVar))  
-cc         = np.zeros((nCase, nVar)) 
+    # arrays to be passed to taylor plot 
+    ratio      = np.zeros((nCase, nVar))  
+    cc         = np.zeros((nCase, nVar)) 
 
-ratio[0,:] = CA_ratio 
-ratio[1,:] = CB_ratio
-ratio[2,:] = CC_ratio
+    ratio[0,:] = CA_ratio 
+    ratio[1,:] = CB_ratio
+    ratio[2,:] = CC_ratio
 
-cc[0,:]    = CA_cc 
-cc[1,:]    = CB_cc
-cc[2,:]    = CC_cc
+    cc[0,:]    = CA_cc 
+    cc[1,:]    = CB_cc
+    cc[2,:]    = CC_cc
 
+    #**********************************
+    # create plot
+    #**********************************
 
+    res = Ngl.Resources()                   # default taylor diagram
+    
+    #del rxy.tmYLValues
+    res.tmYLValues        = [0.0, .25, 0.50, 0.75, 1.00, 1.25, 1.5, 1.75]
 
-#**********************************
-# create plot
-#**********************************
+    res.Markers = [16, 16, 16]             # make all solid fill
+    res.gsMarkerSizeF = 18
+    res.gsMarkerThicknessF = 2
 
+    #case      = [ "LDAS", "OPER", "GFS" ]
+    res.Colors       = ["red", "blue", "Green" ]
+    res.varLabels    = var
+    res.caseLabels   = case
 
+    res.caseLabelsXloc = 1.2                # Move location of variable labels [default 0.45]
+    res.caseLabelsYloc = 1.7                # Move location of variable labels [default 0.45]
+    res.caseLabelsFontHeightF = 0.025       # make slight larger   [default=0.12 ]
+    res.varLabelsYloc = 1.5                 # Move location of variable labels [default 0.45]
+    res.varLabelsFontHeightF  = 0.02        # make slight smaller  [default=0.013]
 
-res = Ngl.Resources()                   # default taylor diagram
-        
-res.Markers = [16, 16, 16]             # make all solid fill
-res.gsMarkerSizeF = 18
-res.gsMarkerThicknessF = 2
+    res.stnRad        = [ 0.5, 4 ]          # additional standard radii
+    res.ccRays        = [ 0.4, 0.75, 0.95 ]        # correllation rays
+    res.centerDiffRMS = True                # RMS 'circles'
+    #res.centerDiffRMS_color = "gray50"
+    res.tiMainFontHeightF   = 0.018
 
-#case      = [ "LDAS", "OPER", "GFS" ]
-res.Colors       = ["red", "blue", "Green" ]
-res.varLabels    = var
-res.caseLabels   = case
+    res.ccRays_color  = "black"          #; default is black
+    res.centerDiffRMS_color  = "black"   #; default is black
 
+    res.tiMainString      = "Regiao: " + config['Regiao'][ind] + "Setor: " + config['Setor'][ind]
+    res.tiMainFontColor   = "Navy"
+    res.tiMainOffsetYF    = 0.02
+    res.tiMainFontHeightF = 0.035
 
-res.caseLabelsXloc = 1.2                # Move location of variable labels [default 0.45]
-res.caseLabelsYloc = 1.7                # Move location of variable labels [default 0.45]
-res.caseLabelsFontHeightF = 0.025       # make slight larger   [default=0.12 ]
-res.varLabelsYloc = 1.5                 # Move location of variable labels [default 0.45]
-res.varLabelsFontHeightF  = 0.02        # make slight smaller  [default=0.013]
+    wks_type = "png"
 
-res.stnRad        = [ 0.5, 4 ]          # additional standard radii
-res.ccRays        = [ 0.4, 0.75, 0.95 ]        # correllation rays
-res.centerDiffRMS = True                # RMS 'circles'
-res.centerDiffRMS_color = "gray50"
-res.tiMainFontHeightF   = 0.018
-
-res.cnMonoLineColor = False  # Allow multiple colors for contour lines.
-res.tiMainString    = "Temperature (C)"
-
-wks_type = "png"
-wks = Ngl.open_wks(wks_type,"taylor_diagram1_v1")
-plot  = Ngl.taylor_diagram(wks,ratio,cc,res)
+    #wks = Ngl.open_wks(wks_type,path_out + "taylor_diagram_" + str(config['Regiao'][ind])  )
+    wks = Ngl.open_wks(wks_type,path_out + "taylor_diagram_" + str(config['Regiao'][ind]) + "_" + str(config['Setor'][ind])  )
+  
+    plot  = Ngl.taylor_diagram(wks,ratio,cc,res)
 
 
