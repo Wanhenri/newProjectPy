@@ -1,1 +1,26 @@
 versao 1.0
+
+versao 2.0
+taylor_diagram_v1.py
+StandardDeviation.py
+SpearmanCorrelation.py
+PearsonCorrelation.py
+maePlota_withGFS.py
+diffPlotadiffGFS_all_vars.py
+diffPlotaGFS_all_vars.py
+biasPlota_withGFS.py
+rmsPlot_withGFS.py
+rmsPlot.py
+rmse_dois_eixo_withGFS.py
+serieTemporal_all_Var_BAM_GFS.py
+serieTemporal_all_Var.py
+gfsPlota_vars.py
+umidadeGLPlota_interp.py
+novaUmidadePlota_withMask_interp.py
+novaUmidadePlota_withMask.py
+umidadeGLPlota_withMask.py
+diffPlotaMERGE.py
+diffPlotadiffGFS.py
+diffPlotaDiffMERGE.py
+maePlota.py
+mergePlota.py
