@@ -1,3 +1,52 @@
+## versao 2.0
+
+taylor_diagram_v1.py
+<br />
+StandardDeviation.py
+<br />
+SpearmanCorrelation.py
+<br />
+PearsonCorrelation.py
+<br />
+maePlota_withGFS.py
+<br />
+diffPlotadiffGFS_all_vars.py
+<br />
+diffPlotaGFS_all_vars.py
+<br />
+biasPlota_withGFS.py
+<br />
+rmsPlot_withGFS.py
+<br />
+rmsPlot.py
+<br />
+rmse_dois_eixo_withGFS.py
+<br />
+serieTemporal_all_Var_BAM_GFS.py
+<br />
+serieTemporal_all_Var.py
+<br />
+gfsPlota_vars.py
+<br />
+umidadeGLPlota_interp.py
+<br />
+novaUmidadePlota_withMask_interp.py
+<br />
+novaUmidadePlota_withMask.py
+<br />
+umidadeGLPlota_withMask.py
+<br />
+diffPlotaMERGE.py
+<br />
+diffPlotadiffGFS.py
+<br />
+diffPlotaDiffMERGE.py
+<br />
+maePlota.py
+<br />
+mergePlota.py<br />
+
+
 ## versao 1.0
 
 
@@ -124,50 +173,3 @@ umidadeGLPlota_withMask.py
 verificar_latlon.py<br />
 
 
-## versao 2.0
-
-taylor_diagram_v1.py
-<br />
-StandardDeviation.py
-<br />
-SpearmanCorrelation.py
-<br />
-PearsonCorrelation.py
-<br />
-maePlota_withGFS.py
-<br />
-diffPlotadiffGFS_all_vars.py
-<br />
-diffPlotaGFS_all_vars.py
-<br />
-biasPlota_withGFS.py
-<br />
-rmsPlot_withGFS.py
-<br />
-rmsPlot.py
-<br />
-rmse_dois_eixo_withGFS.py
-<br />
-serieTemporal_all_Var_BAM_GFS.py
-<br />
-serieTemporal_all_Var.py
-<br />
-gfsPlota_vars.py
-<br />
-umidadeGLPlota_interp.py
-<br />
-novaUmidadePlota_withMask_interp.py
-<br />
-novaUmidadePlota_withMask.py
-<br />
-umidadeGLPlota_withMask.py
-<br />
-diffPlotaMERGE.py
-<br />
-diffPlotadiffGFS.py
-<br />
-diffPlotaDiffMERGE.py
-<br />
-maePlota.py
-<br />
-mergePlota.py<br />
