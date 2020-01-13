@@ -1,3 +1,12 @@
+#### Para o futuro
+
+- https://pythonforundergradengineers.com/creating-taylor-series-functions-with-python.html
+- https://github.com/noaa-oar-arl/MONET/blob/master/monet/plots/taylordiagram.py
+- https://en.wikipedia.org/wiki/Taylor_series
+- https://www.ncl.ucar.edu/Document/Manuals/NCL_to_Python/Transition_Guide_NCL_PyNGL.pdf
+- https://www.pyngl.ucar.edu/Graphics/contour_grids.shtml
+- https://github.com/PeterRochford/SkillMetrics/wiki/Taylor-Diagram-Example-10
+
 ## versao 2.0
 
 taylor_diagram_v1.py
