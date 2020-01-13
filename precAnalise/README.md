@@ -7,6 +7,7 @@
 - https://www.pyngl.ucar.edu/Graphics/contour_grids.shtml
 - https://github.com/PeterRochford/SkillMetrics/wiki/Taylor-Diagram-Example-10
 - https://projetos.cptec.inpe.br/attachments/download/6546/DRAFT%20GFS%20v16%20Evaluation%20Plan.pdf
+- https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html
 
 ## versao 2.0
 
