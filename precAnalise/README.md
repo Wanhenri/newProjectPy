@@ -8,6 +8,13 @@
 - https://github.com/PeterRochford/SkillMetrics/wiki/Taylor-Diagram-Example-10
 - https://projetos.cptec.inpe.br/attachments/download/6546/DRAFT%20GFS%20v16%20Evaluation%20Plan.pdf
 - https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html
+- https://www.wxonline.info/topics/verif2.html 
+- http://www.atmos.albany.edu/daes/atmclasses/atm401/spring_2014/Scores1.pdf
+- https://www.cawcr.gov.au/projects/verification/verif_web_page.html
+- https://www.ecmwf.int/sites/default/files/elibrary/2007/15490-verification-categorical-forecasts.pdf
+- https://www.wmo.int/pages/prog/arep/wwrp/new/jwgfvr.html
+- https://www.wmo.int/pages/prog/arep/wwrp/new/documents/3_wgne31_QPF_all.pdf
+- https://drsteve.github.io/PyForecastTools/plot.html
 
 ## versao 2.0
 
