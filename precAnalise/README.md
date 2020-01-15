@@ -15,6 +15,13 @@
 - https://www.wmo.int/pages/prog/arep/wwrp/new/jwgfvr.html
 - https://www.wmo.int/pages/prog/arep/wwrp/new/documents/3_wgne31_QPF_all.pdf
 - https://drsteve.github.io/PyForecastTools/plot.html
+- https://www.osti.gov/biblio/1401961-pyforecasttools
+- https://www.wmo.int/pages/prog/arep/wwrp/new/Forecast_Verification.html
+- https://www.geosci-model-dev.net/11/3681/2018/gmd-11-3681-2018.pdf
+- https://www.ecmwf.int/en/about/who-we-are/staff-profiles/thomas-haiden
+- https://www.ecmwf.int/en/newsletter/147/meteorology/use-high-density-observations-precipitation-verification
+- http://mtc-m16d.sid.inpe.br/col/sid.inpe.br/mtc-m19/2011/11.04.20.08/doc/publicacao.pdf
+- 
 
 ## versao 2.0
 
