@@ -1,3 +1,5 @@
+- https://github.com/ninjaaron/replacing-bash-scripting-with-python/blob/master/README.rst
+
 http://pythonclub.com.br/debugging-em-python-sem-ide.html
 <br />
 https://gist.github.com/mainvoid007/e5f1c82f50eb0459a55dfc4a0953a08e
